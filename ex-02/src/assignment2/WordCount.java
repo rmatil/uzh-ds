@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -56,7 +58,7 @@ public class WordCount extends Configured implements Tool {
 
 			while (itr.hasMoreTokens()) {
 				String tmp = itr.nextToken();
-				if (!isStopWord(tmp)) {
+				if (!isStopWord(tmp) && !isMovieNumber(tmp)) {
 					word.set(tmp); // Set to contain the contents of a string.
 					output.collect(word, one); // Adds a key/value pair to the output
 				}
@@ -64,7 +66,17 @@ public class WordCount extends Configured implements Tool {
 		}
 
 		public void configure(JobConf pJob) {
+			// read stop words at startup
 			readStopWords();
+		}
+		
+		private static boolean isMovieNumber(String pWord) {
+			Pattern p = Pattern.compile("^[0-9]+"); // at the beginning of the word, one or more than one, numbers
+			Matcher m = p.matcher(pWord);
+			if (m.find()) {
+				return true;
+			}
+			return false;
 		}
 
 		private static boolean isStopWord(String pWord) {
