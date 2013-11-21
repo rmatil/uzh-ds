@@ -52,7 +52,7 @@ public class WordCount extends Configured implements Tool {
 
 			// text processing and reading of the stop words
 			String line = value.toString(); // get line
-			line.toLowerCase().replace(",", "").replace(".", "").replace("-", " ").replace("\"", "");
+			line = line.toLowerCase().replace(",", "").replace(".", "").replace("-", " ").replace("\"", "");
 
 			StringTokenizer itr = new StringTokenizer(line); // get each word ("token") of this line
 
